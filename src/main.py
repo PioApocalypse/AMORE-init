@@ -11,8 +11,15 @@ def assign_variables():
     """
     Prompts user for values missing from .env file.
     """
-    if not os.getenv("ELABFTW_BASE_URL"):
-        ELABFTW_BASE_URL = input("Input your eLabFTW instance's base URL: ") or None
+    global ELABFTW_BASE_URL
+    global API_URL
+    global api_key
+
+    ELABFTW_BASE_URL = (
+        os.getenv("ELABFTW_BASE_URL")
+        or input("Input your eLabFTW instance's base URL: ")
+        or None
+    )
     API_URL = (
         os.path.join(ELABFTW_BASE_URL, "api/v2") if ELABFTW_BASE_URL else None
     )  # No AI agent has been used here, I just thought it looked cool... :D
@@ -21,11 +28,13 @@ def assign_variables():
         print(
             "You can learn how to generate a Read/Write API key for eLabFTW here: \n\t https://doc.elabftw.net/docs/usage/api/#generating-a-key"
         )
-        api_key = (
-            getpass(prompt="Paste a valid eLabFTW API key: ", echo_char="*") or None
-        )
-        if not api_key:
-            raise ValueError("No API key provided, resuming is useless. Quitting.")
+    api_key = (
+        os.getenv("api_key")
+        or getpass(prompt="Paste a valid eLabFTW API key: ", echo_char="*")
+        or None
+    )
+    if not api_key:
+        raise ValueError("No API key provided, resuming is useless. Quitting.")
     return
 
 
@@ -37,4 +46,6 @@ assign_variables()
 # Only if file is run directly and not sourced:
 if __name__ == "__main__":
     print("Debug mode.")
+    print(API_URL)
+    print(api_key)
     # print(Tracker().hello) # debug
